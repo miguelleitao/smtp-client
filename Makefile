@@ -156,9 +156,11 @@ LINK.cpp.release    = $(SILENT) $(CPP) $(CPPFLAGS.release) -o $@ $^
 MKDIR               = $(SILENT) mkdir -p $@
 CP                  = $(SILENT) cp $< $@
 
-all: $(BDIR)/debug/libsmtpclient.a          \
+libs: $(BDIR)/debug/libsmtpclient.a          \
      $(BDIR)/release/libsmtpclient_nossl.a  \
      $(BDIR)/release/libsmtpclient.a        \
+
+all: libs			      \
      $(BDIR)/debug/mailx              \
      $(BDIR)/release/mailx_nossl      \
      $(BDIR)/release/mailx            \
