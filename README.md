@@ -6,7 +6,9 @@ directly into another program.
 This library has been released into the public domain using
 [CC0](https://creativecommons.org/publicdomain/zero/1.0/).
 
-Official repository location:
+Repository location:
+https://github.com/miguelleitao/smtp-client
+This packege is a fork of
 [www.somnisoft.com/smtp-client](https://www.somnisoft.com/smtp-client)
 
 ## Feature list
@@ -42,7 +44,7 @@ The following example code demonstrates how to use the library.
 
 ```C
 #include <stdio.h>
-#include "smtp.h"
+#include "smtpclient.h"
 #define MAIL_SERVER              "mail.example.com"
 #define MAIL_PORT                "587"
 #define MAIL_CONNECTION_SECURITY SMTP_SECURITY_STARTTLS
@@ -103,11 +105,11 @@ to the appropriate values for your mail server. Then copy smtp.c and smtp.h
 into the same directory and run the following commands to compile with OpenSSL
 support.
 
-cc -DSMTP_OPENSSL smtp.c -c -o smtp.o
+cc -DSMTP_OPENSSL smtpclient.c -c -o smtpclient.o
 
 cc -DSMTP_OPENSSL test.c -c -o test.o
 
-cc test.o smtp.o -o smtp_test -lssl -lcrypto
+cc test.o smtpclient.o -o smtp_test -lssl -lcrypto
 
 If you do not need OpenSSL support, remove the -DSMTP_OPENSSL and the
 -lssl and -lcrypto arguments. The commands as above should create an
@@ -129,7 +131,7 @@ header.
 
 ```C
 #include <stdio.h>
-#include "smtp.h"
+#include "smtpclient.h"
 #define MAIL_SERVER              "localhost"
 #define MAIL_PORT                "25"
 #define MAIL_CONNECTION_SECURITY SMTP_SECURITY_NONE

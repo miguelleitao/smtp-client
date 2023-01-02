@@ -192,7 +192,7 @@ doc $(BDIR)/doc/html/index.html: src/mailx.c               \
 gcov:
 	$(GCOV)
 
-install: all
+install: libs
 	cp src/smtpclient.h $(INSTALL_PREFIX)/include/smtpclient.h
 	cp $(BDIR)/release/libsmtpclient.a $(INSTALL_PREFIX)/lib/libsmtpclient.a
 
