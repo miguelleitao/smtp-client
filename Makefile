@@ -61,6 +61,7 @@ CWARN += -Wunknown-pragmas
 CWARN += -Wunused-parameter
 CWARN += -Wvla
 CWARN += -Wwrite-strings
+CWARN += -Wno-reserved-identifier
 
 ifeq ($(shell test $(GCC_VERSION_MAJOR) -ge 7 ; echo $$?), 0)
   CWARN.gcc += -Wduplicated-branches
