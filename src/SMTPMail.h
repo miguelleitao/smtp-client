@@ -13,7 +13,7 @@
 
 #include <exception>
 
-#include "smtp.h"
+#include "smtpclient.h"
 
 /**
  * @class SMTPMailException

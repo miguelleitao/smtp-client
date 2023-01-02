@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <smtp.h>
+#include <smtpclient.h>
 
 /**
  * Load the test email to send from a configuration file.

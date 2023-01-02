@@ -6,7 +6,7 @@
 ##
 ## This Makefile used internally to build and test the SMTP client library.
 ## Do not use this Makefile for building the library into your application.
-## Instead, include the src/smtp.h and src/smtp.c directly into your project
+## Instead, include the src/smtpclient.h and src/smtpclient.c directly into your project
 ## and add those files as part of your own build system.
 ##
 ## This software has been placed into the public domain using CC0.
@@ -121,7 +121,7 @@ CDEF_POSIX = -D_POSIX_C_SOURCE=200112
 SCAN_BUILD = $(SILENT) scan-build -maxloop 100          \
                                   -o $(BDIR)/scan-build \
                                   --status-bugs         \
-             clang -c -o $(BDIR)/debug/scan-build-smtp.o src/smtp.c
+             clang -c -o $(BDIR)/debug/scan-build-smtp.o src/smtpclient.c
 
 VFLAGS += -q
 VFLAGS += --error-exitcode=1
@@ -156,9 +156,9 @@ LINK.cpp.release    = $(SILENT) $(CPP) $(CPPFLAGS.release) -o $@ $^
 MKDIR               = $(SILENT) mkdir -p $@
 CP                  = $(SILENT) cp $< $@
 
-all: $(BDIR)/debug/libsmtp.a          \
-     $(BDIR)/release/libsmtp_nossl.a  \
-     $(BDIR)/release/libsmtp.a        \
+all: $(BDIR)/debug/libsmtpclient.a          \
+     $(BDIR)/release/libsmtpclient_nossl.a  \
+     $(BDIR)/release/libsmtpclient.a        \
      $(BDIR)/debug/mailx              \
      $(BDIR)/release/mailx_nossl      \
      $(BDIR)/release/mailx            \
@@ -176,8 +176,8 @@ clean:
 doc $(BDIR)/doc/html/index.html: src/mailx.c               \
                                  src/SMTPMail.h            \
                                  src/SMTPMail.cpp          \
-                                 src/smtp.h                \
-                                 src/smtp.c                \
+                                 src/smtpclient.h          \
+                                 src/smtpclient.c          \
                                  test/seams.h              \
                                  test/seams.c              \
                                  test/test.h               \
@@ -191,8 +191,8 @@ gcov:
 	$(GCOV)
 
 install: all
-	cp src/smtp.h $(INSTALL_PREFIX)/include/smtp.h
-	cp $(BDIR)/release/libsmtp.a $(INSTALL_PREFIX)/lib/libsmtp.a
+	cp src/smtpclient.h $(INSTALL_PREFIX)/include/smtpclient.h
+	cp $(BDIR)/release/libsmtpclient.a $(INSTALL_PREFIX)/lib/libsmtpclient.a
 
 test: all       \
       test_unit
@@ -221,26 +221,26 @@ $(BDIR)/debug:
 $(BDIR):
 	$(MKDIR)
 
-$(BDIR)/debug/libsmtp.a: $(BDIR)/debug/smtp.o
+$(BDIR)/debug/libsmtpclient.a: $(BDIR)/debug/smtpclient.o
 	$(AR.c.debug)
 
-$(BDIR)/release/libsmtp_nossl.a: $(BDIR)/release/smtp_nossl.o
+$(BDIR)/release/libsmtpclient_nossl.a: $(BDIR)/release/smtpclient_nossl.o
 	$(AR.c.release)
 
-$(BDIR)/release/libsmtp.a : $(BDIR)/release/smtp.o
+$(BDIR)/release/libsmtpclient.a : $(BDIR)/release/smtpclient.o
 	$(AR.c.release)
 
 $(BDIR)/debug/mailx: $(BDIR)/debug/seams.o   \
                      $(BDIR)/debug/mailx.o   \
-                     $(BDIR)/debug/libsmtp.a
+                     $(BDIR)/debug/libsmtpclient.a
 	$(LINK.c.debug) -lssl -lcrypto
 
 $(BDIR)/release/mailx_nossl: $(BDIR)/release/mailx_nossl.o \
-                             $(BDIR)/release/libsmtp_nossl.a
+                             $(BDIR)/release/libsmtpclient_nossl.a
 	$(LINK.c.release)
 
 $(BDIR)/release/mailx: $(BDIR)/release/mailx.o   \
-                       $(BDIR)/release/libsmtp.a
+                       $(BDIR)/release/libsmtpclient.a
 	$(LINK.c.release) -lssl -lcrypto
 
 $(BDIR)/debug/mailx.o: src/mailx.c | $(BDIR)/debug
@@ -254,7 +254,7 @@ $(BDIR)/release/mailx.o: src/mailx.c | $(BDIR)/release
 
 $(BDIR)/release/test_cpp_wrapper: $(BDIR)/release/SMTPMail.o         \
                                   $(BDIR)/release/test_cpp_wrapper.o \
-                                  $(BDIR)/release/libsmtp.a
+                                  $(BDIR)/release/libsmtpclient.a
 	$(LINK.cpp.release) -lssl -lcrypto
 
 $(BDIR)/release/SMTPMail.o: src/SMTPMail.cpp | $(BDIR)/release
@@ -263,17 +263,17 @@ $(BDIR)/release/SMTPMail.o: src/SMTPMail.cpp | $(BDIR)/release
 $(BDIR)/release/test_cpp_wrapper.o: test/test_cpp_wrapper.cpp | $(BDIR)/release
 	$(COMPILE.cpp.release) -Isrc
 
-$(BDIR)/debug/smtp.o: src/smtp.c | $(BDIR)/debug
+$(BDIR)/debug/smtpclient.o: src/smtpclient.c | $(BDIR)/debug
 	$(COMPILE.c.debug) $(CDEF_POSIX)
 
-$(BDIR)/release/smtp_nossl.o: src/smtp.c | $(BDIR)/release
+$(BDIR)/release/smtpclient_nossl.o: src/smtpclient.c | $(BDIR)/release
 	$(COMPILE.c.release) $(CDEF_POSIX) -USMTP_OPENSSL
 
-$(BDIR)/release/smtp.o: src/smtp.c | $(BDIR)/release
+$(BDIR)/release/smtpclient.o: src/smtpclient.c | $(BDIR)/release
 	$(COMPILE.c.release) $(CDEF_POSIX)
 
 $(BDIR)/debug/test: $(BDIR)/debug/seams.o \
-                    $(BDIR)/debug/smtp.o  \
+                    $(BDIR)/debug/smtpclient.o  \
                     $(BDIR)/debug/test.o
 	$(LINK.c.debug) -lssl -lcrypto -lgcov
 
@@ -284,32 +284,32 @@ $(BDIR)/debug/seams.o: test/seams.c | $(BDIR)/debug
 	$(COMPILE.c.debug) $(CDEF_POSIX)
 
 $(BDIR)/debug/clang_test: $(BDIR)/debug/clang_seams.o \
-                          $(BDIR)/debug/clang_smtp.o  \
+                          $(BDIR)/debug/clang_smtpclient.o  \
                           $(BDIR)/debug/clang_test.o
 	$(LINK.c.clang) -lssl -lcrypto -lgcov -lubsan
 
 $(BDIR)/debug/clang_seams.o: test/seams.c | $(BDIR)/debug
 	$(COMPILE.c.clang) $(CDEF_POSIX)
 
-$(BDIR)/debug/clang_smtp.o: src/smtp.c | $(BDIR)/debug
+$(BDIR)/debug/clang_smtpclient.o: src/smtpclient.c | $(BDIR)/debug
 	$(COMPILE.c.clang) $(CDEF_POSIX)
 
 $(BDIR)/debug/clang_test.o: test/test.c | $(BDIR)/debug
 	$(COMPILE.c.clang) $(CDEF_POSIX) -Isrc/
 
 $(BDIR)/release/example_simple: $(BDIR)/release/example_simple.o \
-                                $(BDIR)/release/smtp.o
+                                $(BDIR)/release/smtpclient.o
 	$(LINK.c.release) -lssl -lcrypto
 $(BDIR)/release/example_simple.o: test/example_simple.c | $(BDIR)/release
 	$(COMPILE.c.release) -Isrc
 
 $(BDIR)/release/example_html: $(BDIR)/release/example_html.o \
-                              $(BDIR)/release/smtp.o
+                              $(BDIR)/release/smtpclient.o
 	$(LINK.c.release) -lssl -lcrypto
 $(BDIR)/release/example_html.o: test/example_html.c | $(BDIR)/release
 	$(COMPILE.c.release) -Isrc
 
-$(BDIR)/release/test_nossl: $(BDIR)/release/smtp_nossl.o \
+$(BDIR)/release/test_nossl: $(BDIR)/release/smtpclient_nossl.o \
                             $(BDIR)/release/test_nossl.o
 	$(LINK.c.release)
 
@@ -318,17 +318,17 @@ $(BDIR)/release/test_nossl.o: test/test_nossl.c | $(BDIR)/release
 
 release: $(BDIR)/smtp-client.tar.gz \
          $(BDIR)/smtp-client.zip
-$(BDIR)/smtp-client.tar.gz: $(BDIR)/smtp-client/smtp.c \
-                            $(BDIR)/smtp-client/smtp.h
+$(BDIR)/smtp-client.tar.gz: $(BDIR)/smtp-client/smtpclient.c \
+                            $(BDIR)/smtp-client/smtpclient.h
 	$(SILENT) tar -C $(BDIR) -c -z -v -f $@ smtp-client
-$(BDIR)/smtp-client.zip: $(BDIR)/smtp-client/smtp.c \
-                         $(BDIR)/smtp-client/smtp.h
+$(BDIR)/smtp-client.zip: $(BDIR)/smtp-client/smtpclient.c \
+                         $(BDIR)/smtp-client/smtpclient.h
 	$(SILENT) cd $(BDIR) && zip -r -T -v smtp-client.zip smtp-client
 
-$(BDIR)/smtp-client/smtp.c: src/smtp.c | $(BDIR)/smtp-client
+$(BDIR)/smtp-client/smtpclient.c: src/smtpclient.c | $(BDIR)/smtp-client
 	$(CP)
 
-$(BDIR)/smtp-client/smtp.h: src/smtp.h | $(BDIR)/smtp-client
+$(BDIR)/smtp-client/smtpclient.h: src/smtpclient.h | $(BDIR)/smtp-client
 	$(CP)
 
 $(BDIR)/smtp-client:

@@ -34,7 +34,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-#include "../src/smtp.h"
+#include "../src/smtpclient.h"
 
 #ifdef SMTP_OPENSSL
 # include <openssl/bio.h>

@@ -58,7 +58,7 @@
  */
 #define SMTP_INTERNAL_DEFINE
 
-#include "smtp.h"
+#include "smtpclient.h"
 
 /*
  * The SMTP_TEST converts some library routines into special test seams which

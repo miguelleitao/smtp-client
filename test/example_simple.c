@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "smtp.h"
+#include "smtpclient.h"
 #define MAIL_SERVER              "mail.example.com"
 #define MAIL_PORT                "587"
 #define MAIL_CONNECTION_SECURITY SMTP_SECURITY_STARTTLS

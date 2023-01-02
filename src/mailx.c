@@ -22,7 +22,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "smtp.h"
+#include "smtpclient.h"
 
 /**
  * Stores the to and from email addresses.
