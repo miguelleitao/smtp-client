@@ -1775,7 +1775,9 @@ smtp_tls_init(struct smtp *const smtp,
   SSL_library_init();
 
   SSL_load_error_strings();
-  ERR_load_BIO_strings();
+  #ifdef SSL_VERSION2
+      ERR_load_BIO_strings();
+  #endif
   OpenSSL_add_all_algorithms();
 
   if((smtp->tls_ctx = SSL_CTX_new(SSLv23_client_method())) == NULL){
