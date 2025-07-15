@@ -79,7 +79,7 @@ smtp_write(struct smtp *const smtp,
            const char *const buf,
            size_t len);
 
-int
+SMTP_LINKAGE enum str_getdelim_retcode
 smtp_str_getdelimfd(struct str_getdelimfd *const gdfd);
 
 int
